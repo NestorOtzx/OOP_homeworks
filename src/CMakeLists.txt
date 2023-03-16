@@ -1,5 +1,6 @@
 file(GLOB_RECURSE SOURCES )  #Todas las fuentes sin el Main
 
+
 set(BINARY ${CMAKE_PROJECT_NAME})  # El nombre va a a estar en el CMake principal
 
 # Definicion variable sources
