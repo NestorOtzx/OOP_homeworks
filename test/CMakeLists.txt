@@ -16,7 +16,7 @@ file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cpp *.cc)
 set(SOURCES ${TEST_SOURCES})
 
 # Instrucción que define el ejecutable a partir de las fuentes definidas
-add_executable(${BINARY} ${TEST_SOURCES} basicTest.cpp)  # Primer parametro nombre del ejecutable segundo parametro lista de todos los archivos a compilar
+add_executable(${BINARY} ${TEST_SOURCES} basicTest.cpp ../main.cpp)  # Primer parametro nombre del ejecutable segundo parametro lista de todos los archivos a compilar
 
 # VInculo con las fuentes del proyecto. Ojo google test requiere C++11 Que punto del codigo es el que vamos a probar
 #target_link_libraries(${BINARY} PUBLIC ${CMAKE_PROJECT_NAME}_lib gtest_main) # El ultimo parametro indica que es google test el que va a correr las pruebas

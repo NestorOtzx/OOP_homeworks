@@ -40,3 +40,7 @@ float Propietario::getPuntos() {
 void Propietario::setPuntos(float puntos) {
     this->puntos = puntos;
 }
+
+Hogar Propietario::getHogar() {
+    return hogar;
+}

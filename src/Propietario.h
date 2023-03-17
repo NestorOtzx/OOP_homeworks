@@ -25,6 +25,7 @@ public:
     std::string getNombre();
     bool getRecibeHuespedes();
     float getPuntos();
+    Hogar getHogar();
 
     //setters
     void setPuntos(float puntos);

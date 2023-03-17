@@ -3,6 +3,7 @@
 //
 
 #include "Sistema.h"
+#include <limits>
 
 void Sistema::menu() {
     int opcion = 0;
@@ -22,6 +23,8 @@ void Sistema::menu() {
         std::cout<<"| 7. Ver evaluaciones          |"<<std::endl;
         std::cout<<"| 8. Salir                     |"<<std::endl;
         std::cout<<"--------------------------------"<<std::endl;
+
+
 
         std::cin>>opcion;
         switch(opcion)
@@ -71,10 +74,32 @@ void Sistema::registro() {
         switch(opcion)
         {
             case 1:
-                registrarPropietario();
+                try {
+                    registrarPropietario();
+                }catch (std::invalid_argument ex)
+                {
+                    std::cout<<ex.what()<<std::endl;
+                    return;
+                }
+                catch (std::out_of_range ex)
+                {
+                    std::cout<<ex.what()<<std::endl;
+                    return;
+                }
                 break;
             case 2:
-                registrarHuesped();
+                try {
+                    registrarHuesped();
+                }catch (std::invalid_argument ex)
+                {
+                    std::cout<<ex.what()<<std::endl;
+                    return;
+                }
+                catch (std::out_of_range ex)
+                {
+                    std::cout<<ex.what()<<std::endl;
+                    return;
+                }
                 break;
             default:
                 std::cout<<"Opcion no valida"<<std::endl;
@@ -82,34 +107,58 @@ void Sistema::registro() {
         }
     }
 }
-
 void Sistema::registrarPropietario() {
     int documento;
-    std::string nombre, sexo, fechaNacimiento;
+    std::string nombre, genero, fechaNacimiento;
 
-    std::cout << "Digite el numero de documento del propietario: ";
+    std::cout << "Digite el numero de documento del propietario: "<<std::endl;
     std::cin >> documento;
+
+    if (std::cin.fail())
+    {
+        //limpiar el cin
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        throw std::invalid_argument("El documento debe ser un numero");
+    }else{
+        std::cout << std::endl;
+    }
+
+    int limiteCaracteres = 20;
+
+    std::cout << "Escriba el nombre del propietario: "<<std::endl;
+    std::cin.ignore();
+    std::getline(std::cin, nombre);
+
+    if (nombre.length() > limiteCaracteres)
+    {
+        throw std::out_of_range("El nombre es demasiado largo");
+    }
+
     std::cout << std::endl;
 
-    fflush(stdin);
 
-    std::cout << "Escriba el nombre del propietario: ";
-    std::cin >> nombre;
+    std::cout << "Escriba el genero del propietario: "<<std::endl;
+    std::cin.ignore();
+    std::getline(std::cin, genero);
+
+    if (genero.length() > limiteCaracteres)
+    {
+        throw std::out_of_range("Demasiados caracteres para el genero");
+    }
+
     std::cout << std::endl;
 
-    fflush(stdin);
 
-    std::cout << "Escriba el sexo del propietario: ";
-    std::cin >> sexo;
-    std::cout << std::endl;
+    std::cout << "Escriba la fecha de nacimiento del propietario: "<<std::endl;
+    std::cin.ignore();
+    std::getline(std::cin, fechaNacimiento);
 
-    fflush(stdin);
-
-    std::cout << "Escriba la fecha de nacimiento del propietario: ";
-    std::cin >> fechaNacimiento;
-    std::cout << std::endl;
-
-    fflush(stdin);
+    if (fechaNacimiento.length() > limiteCaracteres)
+    {
+        throw std::out_of_range("Demasiados caracteres para la fecha de nacimiento");
+    }
 
     std::cout << "-|Informacion del hogar|-"<<std::endl;
 
@@ -118,27 +167,59 @@ void Sistema::registrarPropietario() {
     int bebes;
     std::string descripcion;
 
-    std::cout << "Escriba la direccion de la casa: ";
-    std::cin >> direccion;
-    std::cout << std::endl;
+    std::cout << "Escriba la direccion de la casa: "<<std::endl;
+    std::cin.ignore();
+    std::getline(std::cin, direccion);
 
-    std::cout << "Escriba el numero de camas disponibles en la casa: ";
+    if (direccion.length() > limiteCaracteres)
+    {
+        throw std::out_of_range("Demasiados caracteres para la direccion");
+    }
+
+
+    std::cout << "Escriba el numero de camas disponibles en la casa: "<<std::endl;
     std::cin >> camas;
-    std::cout << std::endl;
+    if (std::cin.fail())
+    {
+        //limpiar el cin
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        throw std::invalid_argument("La cantidad de camas debe ser un numero");
+    }else{
+        std::cout << std::endl;
+    }
+
 
     std::cout << "Permiten bebes en la casa?: " << std::endl;
     std::cout << "1. Si." << std::endl;
     std::cout << "2. No." << std::endl;
     std::cin >> bebes;
+    if (std::cin.fail())
+    {
+        //limpiar el cin
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        throw std::invalid_argument("Opcion no valida");
+    }else{
+        std::cout << std::endl;
+    }
+
 
     std::cout<<"Escriba una descripcion sobre la casa: "<<std::endl;
-    std::cin>>descripcion;
+    std::cin.ignore();
+    std::getline(std::cin, descripcion);
+
+    if (descripcion.length() > 25)
+    {
+        throw std::out_of_range("Demasiados caracteres para la descripcion");
+    }
+
 
     Hogar hogarPropietario = Hogar(direccion, camas, bebes<2, descripcion);
 
-
-
-    Propietario * propietario = new Propietario(documento, nombre, sexo, fechaNacimiento, hogarPropietario);
+    Propietario * propietario = new Propietario(documento, nombre, genero, fechaNacimiento, hogarPropietario);
     this->listaPropietarios.push_back(propietario);
 
     std::cout<<"Propietario creado con exito."<<std::endl;
@@ -146,30 +227,80 @@ void Sistema::registrarPropietario() {
 
 void Sistema::registrarHuesped() {
     int documento;
-    std::string nombre, sexo, fechaNacimiento;
+    std::string nombre, genero, fechaNacimiento;
     std::string clinicaNombre;
     std::string ubicacionPaciente;
 
     std::cout<<"Digite el numero de documento del huesped: ";
     std::cin>>documento;
+    if (std::cin.fail())
+    {
+        //limpiar el cin
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    std::cout<<"Escriba el nombre del huesped: ";
-    std::cin>>nombre;
+        throw std::invalid_argument("El documento debe ser un numero");
+    }else{
+        std::cout << std::endl;
+    }
 
-    std::cout<<"Escriba el sexo del huesped: ";
-    std::cin>>sexo;
+    int limiteCaracteres = 20;
 
-    std::cout<<"Escriba la fecha de nacimiento del huesped: ";
-    std::cin>>fechaNacimiento;
+    std::cout << "Escriba el nombre del huesped: "<<std::endl;
+    std::cin.ignore();
+    std::getline(std::cin, nombre);
+
+    if (nombre.length() > limiteCaracteres)
+    {
+        throw std::out_of_range("El nombre es demasiado largo");
+    }
+
+    std::cout << std::endl;
+
+
+    std::cout << "Escriba el genero del huesped: "<<std::endl;
+    std::cin.ignore();
+    std::getline(std::cin, genero);
+
+    if (genero.length() > limiteCaracteres)
+    {
+        throw std::out_of_range("Demasiados caracteres para el genero");
+    }
+
+    std::cout << std::endl;
+
+
+    std::cout << "Escriba la fecha de nacimiento del huesped: "<<std::endl;
+    std::cin.ignore();
+    std::getline(std::cin, fechaNacimiento);
+
+    if (fechaNacimiento.length() > limiteCaracteres)
+    {
+        throw std::out_of_range("Demasiados caracteres para la fecha de nacimiento");
+    }
+
 
     std::cout<<"Escriba el nombre de la clinica donde esta el paciente: ";
-    std::cin>>clinicaNombre;
+    std::cin.ignore();
+    std::getline(std::cin, clinicaNombre);
+
+    if (clinicaNombre.length() > limiteCaracteres)
+    {
+        throw std::out_of_range("Demasiados caracteres para el nombre de la clinica");
+    }
+
 
     std::cout<<"Escriba donde esta siendo atendido el paciente: "<<std::endl;
     std::cout<<"(ciudad/municipio/corregimiento de origen): ";
-    std::cin>>fechaNacimiento;
+    std::cin.ignore();
+    std::getline(std::cin, ubicacionPaciente);
 
-    Huesped * huesped = new Huesped(documento, nombre, sexo, fechaNacimiento, clinicaNombre, ubicacionPaciente);
+    if (ubicacionPaciente.length() > limiteCaracteres)
+    {
+        throw std::out_of_range("Demasiados caracteres para la ubicacion del paciente");
+    }
+
+    Huesped * huesped = new Huesped(documento, nombre, genero, fechaNacimiento, clinicaNombre, ubicacionPaciente);
     listaHuespedes.push_back(huesped);
 
     std::cout<<"Huesped creado con exito."<<std::endl;
@@ -332,22 +463,30 @@ void Sistema::evaluar() {
 void Sistema::usuariosDePrueba() {
     Hogar hogarBasico = Hogar("direccion", 2, true, "una casa");
 
-    Propietario * a = new Propietario(0, "nombre a", "sexo", "dia 1", hogarBasico);
-    this->listaPropietarios.push_back(a);
-    Propietario * b = new Propietario(1, "nombre b", "sexo", "dia 2", hogarBasico);
-    this->listaPropietarios.push_back(b);
-    Propietario * c = new Propietario(2, "nombre c", "sexo", "dia 3", hogarBasico);
-    this->listaPropietarios.push_back(c);
+    Propietario * a = new Propietario(0, "nombre a", "genero", "dia 1", hogarBasico);
+    agregarListaPropietarios(a);
+    Propietario * b = new Propietario(1, "nombre b", "genero", "dia 2", hogarBasico);
+    agregarListaPropietarios(b);
+    Propietario * c = new Propietario(2, "nombre c", "genero", "dia 3", hogarBasico);
+    agregarListaPropietarios(b);
 
-    Huesped * d = new Huesped(0, "nombre d", "sexo", "dia 1", "clinica a", "lugar a");
-    this->listaHuespedes.push_back(d);
-    Huesped * e = new Huesped(1, "nombre e", "sexo", "dia 2", "clinica b", "lugar b");
-    this->listaHuespedes.push_back(e);
-    Huesped * f = new Huesped(2, "nombre f", "sexo", "dia 3", "clinica c", "lugar c");
-    this->listaHuespedes.push_back(f);
+    Huesped * d = new Huesped(0, "nombre d", "genero", "dia 1", "clinica a", "lugar a");
+    agregarListaHuespedes(d);
+    Huesped * e = new Huesped(1, "nombre e", "genero", "dia 2", "clinica b", "lugar b");
+    agregarListaHuespedes(e);
+    Huesped * f = new Huesped(2, "nombre f", "genero", "dia 3", "clinica c", "lugar c");
+    agregarListaHuespedes(f);
 
 
     Reserva * reserva = new Reserva(a, d, "fecha 1", "fecha 2");
     reservas.push_back(reserva);
 
+}
+
+void Sistema::agregarListaHuespedes(Huesped *h) {
+    this->listaHuespedes.push_back(h);
+}
+
+void Sistema::agregarListaPropietarios(Propietario *p) {
+    this->listaPropietarios.push_back(p);
 }

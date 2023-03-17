@@ -21,13 +21,15 @@ private:
     void mostrarHuespedes();
 
 public:
-    Sistema() { menu(); }
+    Sistema() = default;
 
     //Registro
     void menu();
     void registro();
     void registrarPropietario();
     void registrarHuesped();
+    void agregarListaPropietarios(Propietario * p);
+    void agregarListaHuespedes(Huesped * h);
 
 
     //Utilidades
@@ -37,6 +39,8 @@ public:
     void crearReserva();
     void liberarReserva();
     void evaluar();
+
+
 
     //Otros
     void usuariosDePrueba();

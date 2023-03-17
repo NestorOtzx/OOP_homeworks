@@ -7,9 +7,7 @@
 
 int main (){
 
-
-
-    Sistema sist = Sistema();
-
+    Sistema sistema;
+    sistema.menu();
     return 0;
 }
