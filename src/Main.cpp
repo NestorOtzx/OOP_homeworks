@@ -3,10 +3,13 @@
 //
 
 #include <iostream>
-using std::cout;
+#include "Sistema.h"
 
 int main (){
-    std::cout<<"hOLA";
+
+
+
+    Sistema sist = Sistema();
 
     return 0;
 }
